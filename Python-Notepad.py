@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox, filedialog
+from tkinter import messagebox, filedialog, Toplevel
 
 class MyNotepad:
     
@@ -15,6 +15,8 @@ class MyNotepad:
         self.actionmenu = tk.Menu(self.menubar, tearoff=0, font=('Arial',12))
         self.actionmenu.add_command(label="Save all to clipboard", command=self.save_all_to_clipboard)
         self.actionmenu.add_command(label="Clear Notepad", command=self.clear)
+        self.actionmenu.add_command(label="Set all text to lowercase", command=self.set_all_to_lowercase)
+        self.actionmenu.add_command(label="Set all text to uppercase", command=self.set_all_to_uppercase)
         self.menubar.add_cascade(menu=self.filemenu, label="File")
         self.menubar.add_cascade(menu=self.actionmenu, label="Actions")
         self.root.config(menu=self.menubar)
@@ -38,9 +40,23 @@ class MyNotepad:
             with open(file_path, 'w') as file:
                 text_content = self.textbox.get("1.0", tk.END)
                 file.write(text_content)
+                
     def save_all_to_clipboard(self):
         self.root.clipboard_clear()
         self.root.clipboard_append(self.textbox.get('1.0',tk.END))
+        
+    def set_all_to_lowercase(self):
+        text_to_lower = self.textbox.get('1.0',tk.END)
+        text_to_lower = text_to_lower.lower()
+        self.textbox.delete('1.0',tk.END)
+        self.textbox.insert(tk.INSERT,text_to_lower)
+        
+    def set_all_to_uppercase(self):
+        text_to_upper = self.textbox.get('1.0',tk.END)
+        text_to_upper = text_to_upper.upper()
+        self.textbox.delete('1.0',tk.END)
+        self.textbox.insert(tk.INSERT,text_to_upper)
+        
         
 if __name__ == "__main__":
     MyNotepad()
