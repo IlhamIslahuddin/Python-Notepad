@@ -72,7 +72,6 @@ class MyNotepad:
                 self.textbox.delete(1.0, tk.END)
                 self.textbox.insert(tk.END, content)
 
-                
     def save_all_to_clipboard(self):
         self.root.clipboard_clear()
         self.root.clipboard_append(self.textbox.get('1.0',tk.END))
