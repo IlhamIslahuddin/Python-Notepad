@@ -8,6 +8,8 @@ class MyNotepad:
         self.root = tk.Tk()
         self.root.geometry("600x750")
         self.root.title("My Notepad")
+        self.root.configure(bg='lightblue')
+
         self.current_font = Font(family="Arial", size=16)
         self.fonts = ['Arial','Courier New', 'Comic Sans MS', 'Times New Roman', 'Impact', 'MS Sans Serif', 'Roman', 'System']
         
@@ -19,7 +21,9 @@ class MyNotepad:
         self.filemenu.add_command(label="Save as...", command=self.save_as_text_file)
         self.filemenu.add_command(label="Close", command=self.on_closing)
         self.actionmenu.add_command(label="Copy to clipboard", command=self.save_all_to_clipboard)
+        self.actionmenu.add_command(label="Paste from clipboard", command=self.paste_from_clipboard)
         self.actionmenu.add_command(label="Clear Notepad", command=self.clear)
+        self.actionmenu.add_separator()
         self.actionmenu.add_command(label="Set all text to lowercase", command=self.set_all_to_lowercase)
         self.actionmenu.add_command(label="Set all text to uppercase", command=self.set_all_to_uppercase)
         self.menubar.add_cascade(menu=self.filemenu, label="File")
@@ -38,8 +42,8 @@ class MyNotepad:
         
         self.root.config(menu=self.menubar)
         
-        self.textbox = tk.Text(self.root, height=30,font=(self.current_font))
-        self.textbox.pack(padx=10,pady=10)
+        self.textbox = tk.Text(self.root,font=(self.current_font))
+        self.textbox.pack(padx=10,pady=10,expand=True,fill="both")
         
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.root.mainloop()
@@ -61,6 +65,10 @@ class MyNotepad:
     def save_all_to_clipboard(self):
         self.root.clipboard_clear()
         self.root.clipboard_append(self.textbox.get('1.0',tk.END))
+    
+    def paste_from_clipboard(self):
+        to_paste = self.root.clipboard_get()
+        self.textbox.insert(tk.INSERT,to_paste)
     
     def set_new_font(self,font):
         self.current_font = Font(family=font, size=16)
