@@ -9,6 +9,14 @@ class MyNotepad:
         self.root.geometry("600x750")
         self.root.title("My Notepad")
         self.root.configure(bg='lightblue')
+        self.char_count = tk.Frame(self.root,bd=1,relief='sunken')
+        self.char_count.pack(side='bottom',fill='x')
+
+        self.char_count_var = tk.StringVar()
+        self.checked = tk.IntVar()
+
+        self.char_count_label = tk.Label(self.char_count, textvariable=self.char_count_var, anchor='w',padx=5,pady=5)
+        self.char_count_label.pack(fill='x')
 
         self.current_font = Font(family="Arial", size=16)
         self.fonts = ['Arial','Courier New', 'Comic Sans MS', 'Times New Roman', 'Impact', 'MS Sans Serif', 'Roman', 'System']
@@ -17,6 +25,7 @@ class MyNotepad:
         self.filemenu = tk.Menu(self.menubar, tearoff=0, font=('Arial',12))
         self.actionmenu = tk.Menu(self.menubar, tearoff=0, font=('Arial',12))
         self.fontmenu = tk.Menu(self.actionmenu,tearoff=0, font=('Arial',12))
+        self.settingsmenu = tk.Menu(self.menubar, tearoff=0, font=('Arial',12))
         self.actionmenu.add_cascade(menu=self.fontmenu, label="Fonts")
         self.filemenu.add_command(label="Open file", command=self.open_file)
         self.filemenu.add_command(label="Save as...", command=self.save_as_text_file)
@@ -27,8 +36,10 @@ class MyNotepad:
         self.actionmenu.add_separator()
         self.actionmenu.add_command(label="Set all text to lowercase", command=self.set_all_to_lowercase)
         self.actionmenu.add_command(label="Set all text to uppercase", command=self.set_all_to_uppercase)
+        self.settingsmenu.add_checkbutton(label="Show character count", command=self.character_count,variable=self.checked)
         self.menubar.add_cascade(menu=self.filemenu, label="File")
         self.menubar.add_cascade(menu=self.actionmenu, label="Actions")
+        self.menubar.add_cascade(menu=self.settingsmenu, label='Settings')
         
         # for font in self.fonts:
         #     self.fontmenu.add_command(label=font,font=(font,12),command=lambda: self.set_new_font(font))
@@ -45,9 +56,26 @@ class MyNotepad:
         
         self.textbox = tk.Text(self.root,font=(self.current_font))
         self.textbox.pack(padx=10,pady=10,expand=True,fill="both")
+
+        self.root.after(0, self.check_state)
         
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.root.mainloop()
+
+    def check_state(self):
+        print(self.checked.get())
+        if self.checked.get() == 1:
+          self.character_count()
+        else:
+            self.char_count_var.set("Character count: Disabled")
+        self.root.after(2100,self.check_state)
+
+
+    def character_count(self):
+        text = self.textbox.get('1.0',tk.END)
+        length = len(text) - 1
+        status = "Character count: " + str(length)
+        self.char_count_var.set(status)
                    
     def on_closing(self):
         if messagebox.askyesno(title="Quit?", message="Are you sure you want to quit the program? All data will be lost."):
