@@ -17,7 +17,7 @@ class MyNotepad:
         self.draw_space_var = tk.StringVar()
         self.draw_space_checked = tk.IntVar()
 
-        self.char_count_label = tk.Label(self.char_count, textvariable=self.char_count_var, anchor='w',padx=5,pady=5)
+        self.char_count_label = tk.Label(self.char_count, textvariable=self.char_count_var, anchor='w',padx=5,pady=5, font=('Arial',12,'italic))
         self.char_count_label.pack(fill='x')
 
         #default font settings
@@ -40,7 +40,7 @@ class MyNotepad:
         self.filemenu.add_command(label="Save As...", command=self.save_as_text_file, accelerator="Ctrl S")
         self.filemenu.add_command(label="Close Window", command=self.on_closing, accelerator="Alt F4")
         self.actionmenu.add_command(label="Copy to Clipboard", command=self.save_all_to_clipboard)
-        self.actionmenu.add_command(label="Paste from Clipboard", command=self.paste_from_clipboard)
+        self.actionmenu.add_command(label="Paste from Clipboard", command=self.paste_from_clipboard, accelerator="Ctrl V")
         self.actionmenu.add_command(label="Clear Notepad", command=self.clear, accelerator="Ctrl |")
         self.actionmenu.add_command(label="Highlight", command= self.highlight, accelerator="Ctrl {")
         self.actionmenu.add_command(label="Remove Highlight", command= self.remove_highlight, accelerator="Ctrl }")
