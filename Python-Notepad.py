@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import messagebox, filedialog
-from tkinter.font import Font
 
 class MyNotepad:
     
@@ -21,15 +20,18 @@ class MyNotepad:
         self.char_count_label = tk.Label(self.char_count, textvariable=self.char_count_var, anchor='w',padx=5,pady=5)
         self.char_count_label.pack(fill='x')
 
-        self.current_font = Font(family="Arial", size=16)
+        self.current_font = 'Arial'
+        self.font_size = 12
         self.fonts = ['Arial','Courier New', 'Comic Sans MS', 'Times New Roman', 'Impact', 'MS Sans Serif', 'Roman', 'System']
         
         self.menubar = tk.Menu(self.root)
         self.filemenu = tk.Menu(self.menubar, tearoff=0, font=('Arial',12))
         self.actionmenu = tk.Menu(self.menubar, tearoff=0, font=('Arial',12))
         self.fontmenu = tk.Menu(self.actionmenu,tearoff=0, font=('Arial',12))
+        self.fontsizesmenu = tk.Menu(self.fontmenu,tearoff=0, font=('Arial',12))
         self.settingsmenu = tk.Menu(self.menubar, tearoff=0, font=('Arial',12))
         self.actionmenu.add_cascade(menu=self.fontmenu, label="Fonts")
+        self.fontmenu.add_cascade(menu=self.fontsizesmenu, label="Font sizes")
         self.filemenu.add_command(label="Open file", command=self.open_file)
         self.filemenu.add_command(label="Save as...", command=self.save_as_text_file)
         self.filemenu.add_command(label="Close", command=self.on_closing)
@@ -47,6 +49,14 @@ class MyNotepad:
         
         # for font in self.fonts:
         #     self.fontmenu.add_command(label=font,font=(font,12),command=lambda: self.set_new_font(font))
+        self.fontmenu.add_command(label='Change font size',font=('Arial',12))
+        self.fontsizesmenu.add_command(label='Font size: 16',font=('Arial',16),command=lambda: self.set_new_font_size(16))
+        self.fontsizesmenu.add_command(label='Font size: 18',font=('Arial',18),command=lambda: self.set_new_font_size(18))
+        self.fontsizesmenu.add_command(label='Font size: 20',font=('Arial',20),command=lambda: self.set_new_font_size(20))
+        self.fontsizesmenu.add_command(label='Font size: 22',font=('Arial',22),command=lambda: self.set_new_font_size(22))
+        self.fontsizesmenu.add_command(label='Font size: 24',font=('Arial',24),command=lambda: self.set_new_font_size(24))
+        self.fontsizesmenu.add_command(label='Font size: 30',font=('Arial',30),command=lambda: self.set_new_font_size(30))
+        self.fontsizesmenu.add_command(label='Font size: 36',font=('Arial',36),command=lambda: self.set_new_font_size(36))
         self.fontmenu.add_command(label='Arial',font=('Arial',12),command=lambda: self.set_new_font('Arial'))
         self.fontmenu.add_command(label='Courier New',font=('Courier New',12),command=lambda: self.set_new_font('Courier New'))
         self.fontmenu.add_command(label='Comic Sans MS',font=('Comic Sans MS',12),command=lambda: self.set_new_font('Comic Sans MS'))
@@ -91,7 +101,7 @@ class MyNotepad:
           self.character_count()
         else:
             self.char_count_var.set("Character count: Disabled")
-        self.root.after(2100,self.check_state)
+        self.root.after(2200,self.check_state)
 
     def character_count(self):
         text = self.textbox.get('1.0',tk.END)
@@ -131,9 +141,13 @@ class MyNotepad:
         self.textbox.insert(tk.INSERT,to_paste)
     
     def set_new_font(self,font):
-        self.current_font = Font(family=font, size=16)
-        self.textbox.configure(font=self.current_font)
-        
+        self.current_font = font
+        self.textbox.configure(font=(self.current_font,self.font_size))
+    
+    def set_new_font_size(self,size):
+        self.font_size = size
+        self.textbox.configure(font=(self.current_font,self.font_size))
+
     def set_all_to_lowercase(self):
         text_to_lower = self.textbox.get('1.0',tk.END)
         text_to_lower = text_to_lower.lower()
