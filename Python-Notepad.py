@@ -13,7 +13,10 @@ class MyNotepad:
         self.char_count.pack(side='bottom',fill='x')
 
         self.char_count_var = tk.StringVar()
-        self.checked = tk.IntVar()
+        self.char_count_checked = tk.IntVar()
+
+        self.draw_space_var = tk.StringVar()
+        self.draw_space_checked = tk.IntVar()
 
         self.char_count_label = tk.Label(self.char_count, textvariable=self.char_count_var, anchor='w',padx=5,pady=5)
         self.char_count_label.pack(fill='x')
@@ -36,7 +39,8 @@ class MyNotepad:
         self.actionmenu.add_separator()
         self.actionmenu.add_command(label="Set all text to lowercase", command=self.set_all_to_lowercase)
         self.actionmenu.add_command(label="Set all text to uppercase", command=self.set_all_to_uppercase)
-        self.settingsmenu.add_checkbutton(label="Show character count", command=self.character_count,variable=self.checked)
+        self.settingsmenu.add_checkbutton(label="Show character count", command=self.character_count,variable=self.char_count_checked)
+        self.settingsmenu.add_checkbutton(label="Add canvas", command=self.draw_space,variable=self.draw_space_checked)
         self.menubar.add_cascade(menu=self.filemenu, label="File")
         self.menubar.add_cascade(menu=self.actionmenu, label="Actions")
         self.menubar.add_cascade(menu=self.settingsmenu, label='Settings')
@@ -55,21 +59,39 @@ class MyNotepad:
         self.root.config(menu=self.menubar)
         
         self.textbox = tk.Text(self.root,font=(self.current_font))
-        self.textbox.pack(padx=10,pady=10,expand=True,fill="both")
+        self.textbox.pack(padx=10,pady=5,expand=True,fill="both")
 
         self.root.after(0, self.check_state)
         
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.root.mainloop()
+    
+    def draw_space(self):
+        if self.draw_space_checked.get() == 1:
+            self.startx, self.starty = 0, 0
+            self.endx, self.endy = 0, 0
+            self.draw_space = tk.Canvas(self.root)
+            self.draw_space.pack(padx=10,pady=10)
+            self.draw_space.bind('<Button>', self.get_click)
+            self.draw_space.bind('<ButtonRelease>', self.release_click)
+        else:
+            self.draw_space.pack_forget()
+
+    def get_click(self,event):
+        self.startx = event.x
+        self.starty = event.y
+
+    def release_click(self,event):
+        self.endx = event.x
+        self.endy = event.y
+        self.draw_space.create_line(self.startx, self.starty, self.endx, self.endy, fill='blue')
 
     def check_state(self):
-        print(self.checked.get())
-        if self.checked.get() == 1:
+        if self.char_count_checked.get() == 1:
           self.character_count()
         else:
             self.char_count_var.set("Character count: Disabled")
         self.root.after(2100,self.check_state)
-
 
     def character_count(self):
         text = self.textbox.get('1.0',tk.END)
