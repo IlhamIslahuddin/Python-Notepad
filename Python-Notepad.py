@@ -14,17 +14,16 @@ class MyNotepad:
 
         self.char_count_var = tk.StringVar()
         self.char_count_checked = tk.IntVar()
-
         self.draw_space_var = tk.StringVar()
         self.draw_space_checked = tk.IntVar()
 
         self.char_count_label = tk.Label(self.char_count, textvariable=self.char_count_var, anchor='w',padx=5,pady=5)
         self.char_count_label.pack(fill='x')
 
+        #default font settings
         self.current_font = 'Arial'
         self.font_size = 14
         self.font_weight = 'normal'
-        # self.fonts = ['Arial','Courier New', 'Comic Sans MS', 'Times New Roman', 'Impact', 'MS Sans Serif', 'Roman', 'System']
         
         self.menubar = tk.Menu(self.root)
         self.filemenu = tk.Menu(self.menubar, tearoff=0, font=('Arial',12))
@@ -37,14 +36,14 @@ class MyNotepad:
         self.fontmenu.add_cascade(menu=self.fontsizesmenu, label="Font Sizes")
         self.fontmenu.add_cascade(menu=self.fontweightmenu, label="Font Weights")
         self.fontmenu.add_cascade(menu=self.fontsmenu, label="Fonts")
-        self.filemenu.add_command(label="Open File", command=self.open_file)
-        self.filemenu.add_command(label="Save As...", command=self.save_as_text_file)
-        self.filemenu.add_command(label="Close Window", command=self.on_closing)
+        self.filemenu.add_command(label="Open File", command=self.open_file, accelerator="Ctrl O")
+        self.filemenu.add_command(label="Save As...", command=self.save_as_text_file, accelerator="Ctrl S")
+        self.filemenu.add_command(label="Close Window", command=self.on_closing, accelerator="Alt F4")
         self.actionmenu.add_command(label="Copy to Clipboard", command=self.save_all_to_clipboard)
         self.actionmenu.add_command(label="Paste from Clipboard", command=self.paste_from_clipboard)
-        self.actionmenu.add_command(label="Clear Notepad", command=self.clear)
-        self.actionmenu.add_command(label="Highlight", command= self.highlight)
-        self.actionmenu.add_command(label="Remove Highlight", command= self.remove_highlight)
+        self.actionmenu.add_command(label="Clear Notepad", command=self.clear, accelerator="Ctrl |")
+        self.actionmenu.add_command(label="Highlight", command= self.highlight, accelerator="Ctrl {")
+        self.actionmenu.add_command(label="Remove Highlight", command= self.remove_highlight, accelerator="Ctrl }")
         self.actionmenu.add_separator()
         self.actionmenu.add_command(label="Set all text to lowercase", command=self.set_all_to_lowercase)
         self.actionmenu.add_command(label="Set all text to UPPERCASE", command=self.set_all_to_uppercase)
@@ -54,8 +53,7 @@ class MyNotepad:
         self.menubar.add_cascade(menu=self.actionmenu, label="Actions")
         self.menubar.add_cascade(menu=self.fontmenu, label='Fonts')
         self.menubar.add_cascade(menu=self.settingsmenu, label='Settings')
-                # for font in self.fonts:
-        #     self.fontmenu.add_command(label=font,font=(font,12),command=lambda: self.set_new_font(font))
+ 
         self.fontsizesmenu.add_command(label='16',font=('Arial',16),command=lambda: self.set_new_font_size(16))
         self.fontsizesmenu.add_command(label='18',font=('Arial',18),command=lambda: self.set_new_font_size(18))
         self.fontsizesmenu.add_command(label='20',font=('Arial',20),command=lambda: self.set_new_font_size(20))
@@ -80,12 +78,20 @@ class MyNotepad:
         
         self.textbox = tk.Text(self.root,font=(self.current_font,self.font_size,self.font_weight))
         self.textbox.pack(padx=10,pady=5,expand=True,fill="both")
+        
+        #shortcuts
+        self.textbox.bind("<Control-{>",self.highlight)
+        self.textbox.bind("<Control-}>",self.remove_highlight)
+        self.textbox.bind("<Control-|>",self.clear)
+        self.textbox.bind("<Control-o>",self.open_file)
+        self.textbox.bind("<Control-s>",self.save_as_text_file)
 
         self.root.after(0, self.check_state)
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.root.mainloop()
     
-    def highlight(self):
+    def highlight(self,event=""):
+        #event = "" sets default value for event so it is not always needed as an arg
         try:
             start = self.textbox.index("sel.first")
             end = self.textbox.index("sel.last")
@@ -94,7 +100,7 @@ class MyNotepad:
         except:
             messagebox.showwarning(message="No text was selected for highlighting.")
             
-    def remove_highlight(self):
+    def remove_highlight(self,event=""):
         try:
             start = self.textbox.index("sel.first")
             end = self.textbox.index("sel.last")
@@ -140,17 +146,17 @@ class MyNotepad:
         if messagebox.askyesno(title="Quit?", message="Are you sure you want to quit the program? All data will be lost."):
             self.root.destroy()
             
-    def clear(self):
+    def clear(self,event=""):
         self.textbox.delete('1.0', tk.END)
     
-    def save_as_text_file(self):
+    def save_as_text_file(self,event=""):
         file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
         if file_path:
             with open(file_path, 'w') as file:
                 text_content = self.textbox.get("1.0", tk.END)
                 file.write(text_content)
     
-    def open_file(self):
+    def open_file(self,event=""):
         open_file_path = filedialog.askopenfilename(
             title="Select a Text File", filetypes=[("Text files", "*.txt")])
         if open_file_path:
