@@ -37,11 +37,13 @@ class MyNotepad:
         self.settingsmenu = tk.Menu(self.menubar, tearoff=0, font=('Arial',12))
         self.backgroundmenu = tk.Menu(self.settingsmenu, tearoff=0, font=('Arial',12))
         self.fontcolourmenu = tk.Menu(self.settingsmenu,tearoff=0, font=('Arial',12))
+        self.fontalignmentmenu = tk.Menu(self.settingsmenu,tearoff=0, font=('Arial',12))
         self.fontmenu.add_cascade(menu=self.fontsizesmenu, label="Font Sizes")
         self.fontmenu.add_cascade(menu=self.fontweightmenu, label="Font Weights")
         self.fontmenu.add_cascade(menu=self.fontsmenu, label="Fonts")
-        self.settingsmenu.add_cascade(menu=self.backgroundmenu,label="Change background colour")
-        self.settingsmenu.add_cascade(menu=self.fontcolourmenu,label="Change font colour")
+        self.settingsmenu.add_cascade(menu=self.backgroundmenu,label="Change Background Colour")
+        self.settingsmenu.add_cascade(menu=self.fontcolourmenu,label="Change Font Colour")
+        self.settingsmenu.add_cascade(menu=self.fontalignmentmenu,label="Change Text Alignment")
         self.filemenu.add_command(label="Open File", command=self.open_file, accelerator="Ctrl O")
         self.filemenu.add_command(label="Save As...", command=self.save_as_text_file, accelerator="Ctrl S")
         self.filemenu.add_separator()
@@ -68,6 +70,9 @@ class MyNotepad:
         self.fontcolourmenu.add_command(label="Yellow", command=lambda: self.change_font_colour("yellow"))
         self.fontcolourmenu.add_command(label="Red", command=lambda: self.change_font_colour("red"))
         self.fontcolourmenu.add_command(label="Green", command=lambda: self.change_font_colour("green"))
+        self.fontalignmentmenu.add_command(label="Left", command=lambda: self.change_alignment("left"))
+        self.fontalignmentmenu.add_command(label="Center", command=lambda: self.change_alignment("center"))
+        self.fontalignmentmenu.add_command(label="Right", command=lambda: self.change_alignment("right"))
         self.menubar.add_cascade(menu=self.filemenu, label="File")
         self.menubar.add_cascade(menu=self.actionmenu, label="Actions")
         self.menubar.add_cascade(menu=self.fontmenu, label='Fonts')
@@ -133,6 +138,10 @@ class MyNotepad:
             cursor_pos = self.textbox.index(INSERT)
             image = PhotoImage(file=image_file_path)
             self.textbox.image_create(cursor_pos, image=image)
+            
+    def change_alignment(self,alignment):
+            self.textbox.tag_config(alignment,justify=alignment)
+            self.textbox.tag_add(alignment,'1.0',tk.END)
 
     def change_background(self, colour):
         self.root.configure(bg=colour)
