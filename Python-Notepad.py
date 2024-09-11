@@ -47,7 +47,7 @@ class MyNotepad:
         self.actionmenu.add_command(label="Highlight", command= self.highlight, accelerator="Ctrl {")
         self.actionmenu.add_command(label="Remove Highlight", command= self.remove_highlight, accelerator="Ctrl }")
         self.actionmenu.add_separator()
-        self.actionmenu.add_command(label="Set all text to lowercase", command=self.set_all_to_lowercase)
+        self.actionmenu.add_command(label="Set all text to lowercase", command=self.set_to_lowercase)
         self.actionmenu.add_command(label="Set all text to UPPERCASE", command=self.set_all_to_uppercase)
         self.settingsmenu.add_checkbutton(label="Show Character Count", command=self.character_count,variable=self.char_count_checked)
         self.settingsmenu.add_checkbutton(label="Add Canvas", command=self.create_draw_space,variable=self.draw_space_checked)
@@ -70,6 +70,7 @@ class MyNotepad:
         self.fontweightmenu.add_command(label='Normal',font=('Arial',12, 'normal'),command=lambda: self.set_new_font_weight('normal'))
         self.fontweightmenu.add_command(label='Italic',font=('Arial',12, 'italic'),command=lambda: self.set_new_font_weight('italic'))
         self.fontweightmenu.add_command(label='Bold',font=('Arial',12, 'bold'),command=lambda: self.set_new_font_weight('bold'))
+        self.fontweightmenu.add_command(label='Underline',font=('Arial',12, 'underline'),command=lambda: self.set_new_font_weight('underline'))
         self.fontweightmenu.add_command(label='Bold + Italic',font=('Arial',12, 'bold italic'),command=lambda: self.set_new_font_weight('bold italic'))
         self.fontsmenu.add_command(label='Arial',font=('Arial',12),command=lambda: self.set_new_font('Arial'))
         self.fontsmenu.add_command(label='Courier New',font=('Courier New',12),command=lambda: self.set_new_font('Courier New'))
@@ -83,7 +84,7 @@ class MyNotepad:
         self.root.config(menu=self.menubar)
         
         self.textbox = tk.Text(self.root,font=(self.current_font,self.font_size,self.font_weight))
-        self.textbox.pack(padx=10,pady=10,expand=True,fill="both")
+        self.textbox.pack(padx=10,pady=10,fill="both")
         
         #shortcuts
         self.textbox.bind("<Control-{>",self.highlight)
@@ -164,6 +165,7 @@ class MyNotepad:
             with open(file_path, 'w') as file:
                 text_content = self.textbox.get("1.0", tk.END)
                 file.write(text_content)
+                
     
     def open_file(self,event=""):
         open_file_path = filedialog.askopenfilename(
@@ -183,18 +185,41 @@ class MyNotepad:
         self.textbox.insert(tk.INSERT,to_paste)
     
     def set_new_font(self,font):
-        self.current_font = font
-        self.textbox.configure(font=(self.current_font,self.font_size,self.font_weight))
+        try:
+            start = self.textbox.index("sel.first")
+            end = self.textbox.index("sel.last")
+            self.textbox.tag_remove("sel_txt",start,end)
+            self.textbox.tag_add("sel_txt",start,end)
+            self.textbox.tag_config('sel_txt', font=(font,self.font_size,self.font_weight))
+        except:
+            self.current_font = font
+            self.textbox.configure(font=(self.current_font,self.font_size,self.font_weight))
+
     
     def set_new_font_size(self,size):
-        self.font_size = size
-        self.textbox.configure(font=(self.current_font,self.font_size,self.font_weight))
+        try:
+            start = self.textbox.index("sel.first")
+            end = self.textbox.index("sel.last")
+            self.textbox.tag_remove("sel_txt",start,end)
+            self.textbox.tag_add("sel_txt",start,end)
+            self.textbox.tag_config('sel_txt', font=(self.current_font,size,self.font_weight))
+        except:
+            self.font_size = size
+            self.textbox.configure(font=(self.current_font,self.font_size,self.font_weight))
+
         
     def set_new_font_weight(self,weight):
-        self.font_weight = weight
-        self.textbox.configure(font=(self.current_font,self.font_size,self.font_weight))
+        try:
+            start = self.textbox.index("sel.first")
+            end = self.textbox.index("sel.last")
+            self.textbox.tag_remove("sel_txt",start,end)
+            self.textbox.tag_add("sel_txt",start,end)
+            self.textbox.tag_config('sel_txt', font=(self.current_font,self.font_size,weight))
+        except:
+            self.font_weight = weight
+            self.textbox.configure(font=(self.current_font,self.font_size,self.font_weight))
 
-    def set_all_to_lowercase(self):
+    def set_to_lowercase(self):
         text_to_lower = self.textbox.get('1.0',tk.END)
         text_to_lower = text_to_lower.lower()
         self.textbox.delete('1.0',tk.END)
