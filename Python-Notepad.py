@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox, filedialog, PhotoImage, INSERT
+import random
+import string
 
 class MyNotepad:
     
@@ -196,33 +198,36 @@ class MyNotepad:
     
     def set_new_font(self,font):
         try:
+            font_code = ''.join(random.choices(string.ascii_letters, k=6))
             start = self.textbox.index("sel.first")
             end = self.textbox.index("sel.last")
-            self.textbox.tag_remove("sel_txt",start,end)
-            self.textbox.tag_add("sel_txt",start,end)
-            self.textbox.tag_config('sel_txt', font=(font,self.font_size,self.font_weight))
+            self.textbox.tag_remove(font_code,start,end)
+            self.textbox.tag_add(font_code,start,end)
+            self.textbox.tag_config(font_code, font=(font,self.font_size,self.font_weight))
         except:
             self.current_font = font
             self.textbox.configure(font=(self.current_font,self.font_size,self.font_weight))
 
     def set_new_font_size(self,size):
         try:
+            size_code = ''.join(random.choices(string.ascii_letters, k=6))
             start = self.textbox.index("sel.first")
             end = self.textbox.index("sel.last")
-            self.textbox.tag_remove("sel_txt",start,end)
-            self.textbox.tag_add("sel_txt",start,end)
-            self.textbox.tag_config('sel_txt', font=(self.current_font,size,self.font_weight))
+            self.textbox.tag_remove(size_code,start,end)
+            self.textbox.tag_add(size_code,start,end)
+            self.textbox.tag_config(size_code, font=(self.current_font,size,self.font_weight))
         except:
             self.font_size = size
             self.textbox.configure(font=(self.current_font,self.font_size,self.font_weight))
 
     def set_new_font_weight(self,weight):
         try:
+            weight_code = ''.join(random.choices(string.ascii_letters, k=6))
             start = self.textbox.index("sel.first")
             end = self.textbox.index("sel.last")
-            self.textbox.tag_remove("sel_txt",start,end)
-            self.textbox.tag_add("sel_txt",start,end)
-            self.textbox.tag_config("sel_txt", font=(self.current_font,self.font_size,weight))
+            self.textbox.tag_remove(weight_code,start,end)
+            self.textbox.tag_add(weight_code,start,end)
+            self.textbox.tag_config(weight_code, font=(self.current_font,self.font_size,weight))
         except:
             self.font_weight = weight
             self.textbox.configure(font=(self.current_font,self.font_size,self.font_weight))
