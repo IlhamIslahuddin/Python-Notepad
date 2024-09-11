@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox, filedialog
+from tkinter import messagebox, filedialog, PhotoImage, INSERT
 
 class MyNotepad:
     
@@ -40,6 +40,8 @@ class MyNotepad:
         self.settingsmenu.add_cascade(menu=self.backgroundmenu,label="Change background colour")
         self.filemenu.add_command(label="Open File", command=self.open_file, accelerator="Ctrl O")
         self.filemenu.add_command(label="Save As...", command=self.save_as_text_file, accelerator="Ctrl S")
+        self.filemenu.add_separator()
+        self.filemenu.add_command(label="Add PNG Image", command=self.add_image)
         self.filemenu.add_command(label="Close Window", command=self.on_closing, accelerator="Alt F4")
         self.actionmenu.add_command(label="Copy to Clipboard", command=self.save_all_to_clipboard)
         self.actionmenu.add_command(label="Paste from Clipboard", command=self.paste_from_clipboard, accelerator="Ctrl V")
@@ -65,8 +67,8 @@ class MyNotepad:
         self.fontsizesmenu.add_command(label='20',font=('Arial',20),command=lambda: self.set_new_font_size(20))
         self.fontsizesmenu.add_command(label='22',font=('Arial',22),command=lambda: self.set_new_font_size(22))
         self.fontsizesmenu.add_command(label='24',font=('Arial',24),command=lambda: self.set_new_font_size(24))
-        self.fontsizesmenu.add_command(label='30',font=('Arial',30),command=lambda: self.set_new_font_size(30))
-        self.fontsizesmenu.add_command(label='36',font=('Arial',36),command=lambda: self.set_new_font_size(36))
+        self.fontsizesmenu.add_command(label='26',font=('Arial',26),command=lambda: self.set_new_font_size(26))
+        self.fontsizesmenu.add_command(label='28',font=('Arial',28),command=lambda: self.set_new_font_size(28))
         self.fontweightmenu.add_command(label='Normal',font=('Arial',12, 'normal'),command=lambda: self.set_new_font_weight('normal'))
         self.fontweightmenu.add_command(label='Italic',font=('Arial',12, 'italic'),command=lambda: self.set_new_font_weight('italic'))
         self.fontweightmenu.add_command(label='Bold',font=('Arial',12, 'bold'),command=lambda: self.set_new_font_weight('bold'))
@@ -83,8 +85,8 @@ class MyNotepad:
         
         self.root.config(menu=self.menubar)
         
-        self.textbox = tk.Text(self.root,font=(self.current_font,self.font_size,self.font_weight))
-        self.textbox.pack(padx=10,pady=10,fill="both")
+        self.textbox = tk.Text(self.root,font=(self.current_font,self.font_size,self.font_weight), selectbackground="lightgreen", selectforeground="black")
+        self.textbox.pack(padx=10,pady=10,expand=True,fill="both")
         
         #shortcuts
         self.textbox.bind("<Control-{>",self.highlight)
@@ -96,7 +98,16 @@ class MyNotepad:
         self.root.after(0, self.check_state)
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.root.mainloop()
-        
+
+    def add_image(self):
+        image_file_path = filedialog.askopenfilename(
+            title="Select a PNG File", filetypes=[("Image files", "*.png")])
+        if image_file_path:
+            global image
+            cursor_pos = self.textbox.index(INSERT)
+            image = PhotoImage(file=image_file_path)
+            self.textbox.image_create(cursor_pos, image=image)
+
     def change_background(self, colour):
         self.root.configure(bg=colour)
 
@@ -165,8 +176,7 @@ class MyNotepad:
             with open(file_path, 'w') as file:
                 text_content = self.textbox.get("1.0", tk.END)
                 file.write(text_content)
-                
-    
+            
     def open_file(self,event=""):
         open_file_path = filedialog.askopenfilename(
             title="Select a Text File", filetypes=[("Text files", "*.txt")])
@@ -195,7 +205,6 @@ class MyNotepad:
             self.current_font = font
             self.textbox.configure(font=(self.current_font,self.font_size,self.font_weight))
 
-    
     def set_new_font_size(self,size):
         try:
             start = self.textbox.index("sel.first")
@@ -207,14 +216,13 @@ class MyNotepad:
             self.font_size = size
             self.textbox.configure(font=(self.current_font,self.font_size,self.font_weight))
 
-        
     def set_new_font_weight(self,weight):
         try:
             start = self.textbox.index("sel.first")
             end = self.textbox.index("sel.last")
             self.textbox.tag_remove("sel_txt",start,end)
             self.textbox.tag_add("sel_txt",start,end)
-            self.textbox.tag_config('sel_txt', font=(self.current_font,self.font_size,weight))
+            self.textbox.tag_config("sel_txt", font=(self.current_font,self.font_size,weight))
         except:
             self.font_weight = weight
             self.textbox.configure(font=(self.current_font,self.font_size,self.font_weight))
