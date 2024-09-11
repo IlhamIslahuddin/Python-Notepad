@@ -36,10 +36,12 @@ class MyNotepad:
         self.fontweightmenu = tk.Menu(self.fontmenu,tearoff=0, font=('Arial',12))
         self.settingsmenu = tk.Menu(self.menubar, tearoff=0, font=('Arial',12))
         self.backgroundmenu = tk.Menu(self.settingsmenu, tearoff=0, font=('Arial',12))
+        self.fontcolourmenu = tk.Menu(self.settingsmenu,tearoff=0, font=('Arial',12))
         self.fontmenu.add_cascade(menu=self.fontsizesmenu, label="Font Sizes")
         self.fontmenu.add_cascade(menu=self.fontweightmenu, label="Font Weights")
         self.fontmenu.add_cascade(menu=self.fontsmenu, label="Fonts")
         self.settingsmenu.add_cascade(menu=self.backgroundmenu,label="Change background colour")
+        self.settingsmenu.add_cascade(menu=self.fontcolourmenu,label="Change font colour")
         self.filemenu.add_command(label="Open File", command=self.open_file, accelerator="Ctrl O")
         self.filemenu.add_command(label="Save As...", command=self.save_as_text_file, accelerator="Ctrl S")
         self.filemenu.add_separator()
@@ -47,6 +49,9 @@ class MyNotepad:
         self.filemenu.add_command(label="Close Window", command=self.on_closing, accelerator="Alt F4")
         self.actionmenu.add_command(label="Copy to Clipboard", command=self.save_all_to_clipboard)
         self.actionmenu.add_command(label="Paste from Clipboard", command=self.paste_from_clipboard, accelerator="Ctrl V")
+        self.actionmenu.add_separator()
+        self.actionmenu.add_command(label="Undo",command=self.undo, accelerator="Ctrl Z")
+        self.actionmenu.add_command(label="Redo",command=self.redo, accelerator="Ctrl Y")
         self.actionmenu.add_command(label="Clear Notepad", command=self.clear, accelerator="Ctrl |")
         self.actionmenu.add_command(label="Highlight", command= self.highlight, accelerator="Ctrl {")
         self.actionmenu.add_command(label="Remove Highlight", command= self.remove_highlight, accelerator="Ctrl }")
@@ -59,6 +64,10 @@ class MyNotepad:
         self.backgroundmenu.add_command(label="Light Yellow", command=lambda: self.change_background("lightyellow"))
         self.backgroundmenu.add_command(label="Red", command=lambda: self.change_background("red"))
         self.backgroundmenu.add_command(label="Light Green", command=lambda: self.change_background("lightgreen"))
+        self.fontcolourmenu.add_command(label="Blue", command=lambda: self.change_font_colour("blue"))
+        self.fontcolourmenu.add_command(label="Yellow", command=lambda: self.change_font_colour("yellow"))
+        self.fontcolourmenu.add_command(label="Red", command=lambda: self.change_font_colour("red"))
+        self.fontcolourmenu.add_command(label="Green", command=lambda: self.change_font_colour("green"))
         self.menubar.add_cascade(menu=self.filemenu, label="File")
         self.menubar.add_cascade(menu=self.actionmenu, label="Actions")
         self.menubar.add_cascade(menu=self.fontmenu, label='Fonts')
@@ -74,8 +83,11 @@ class MyNotepad:
         self.fontweightmenu.add_command(label='Normal',font=('Arial',12, 'normal'),command=lambda: self.set_new_font_weight('normal'))
         self.fontweightmenu.add_command(label='Italic',font=('Arial',12, 'italic'),command=lambda: self.set_new_font_weight('italic'))
         self.fontweightmenu.add_command(label='Bold',font=('Arial',12, 'bold'),command=lambda: self.set_new_font_weight('bold'))
-        self.fontweightmenu.add_command(label='Underline',font=('Arial',12, 'underline'),command=lambda: self.set_new_font_weight('underline'))
         self.fontweightmenu.add_command(label='Bold + Italic',font=('Arial',12, 'bold italic'),command=lambda: self.set_new_font_weight('bold italic'))
+        self.fontweightmenu.add_command(label='Underline',font=('Arial',12, 'underline'),command=lambda: self.set_new_font_weight('underline'))
+        self.fontweightmenu.add_command(label='Underline + Bold',font=('Arial',12, 'underline bold'),command=lambda: self.set_new_font_weight('underline bold'))
+        self.fontweightmenu.add_command(label='Underline + Italic',font=('Arial',12, 'underline italic'),command=lambda: self.set_new_font_weight('underline italic'))
+        self.fontweightmenu.add_command(label='Underline + Bold + Italic',font=('Arial',12, 'underline bold italic'),command=lambda: self.set_new_font_weight('underline bold italic'))
         self.fontsmenu.add_command(label='Arial',font=('Arial',12),command=lambda: self.set_new_font('Arial'))
         self.fontsmenu.add_command(label='Courier New',font=('Courier New',12),command=lambda: self.set_new_font('Courier New'))
         self.fontsmenu.add_command(label='Comic Sans MS',font=('Comic Sans MS',12),command=lambda: self.set_new_font('Comic Sans MS'))
@@ -87,7 +99,7 @@ class MyNotepad:
         
         self.root.config(menu=self.menubar)
         
-        self.textbox = tk.Text(self.root,font=(self.current_font,self.font_size,self.font_weight), selectbackground="lightgreen", selectforeground="black")
+        self.textbox = tk.Text(self.root,font=(self.current_font,self.font_size,self.font_weight), selectbackground="lightgreen", selectforeground="black", undo=True)
         self.textbox.pack(padx=10,pady=10,expand=True,fill="both")
         
         #shortcuts
@@ -100,7 +112,19 @@ class MyNotepad:
         self.root.after(0, self.check_state)
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.root.mainloop()
+        
+    def undo(self):
+        try:
+            self.textbox.edit_undo()
+        except:
+            pass
 
+    def redo(self):
+        try:
+            self.textbox.edit_redo()
+        except:
+            pass
+        
     def add_image(self):
         image_file_path = filedialog.askopenfilename(
             title="Select a PNG File", filetypes=[("Image files", "*.png")])
@@ -112,6 +136,9 @@ class MyNotepad:
 
     def change_background(self, colour):
         self.root.configure(bg=colour)
+        
+    def change_font_colour(self, colour):
+        self.textbox.configure(fg=colour)
 
     def highlight(self,event=""):
         #event = "" sets default value for event so it is not always needed as an arg
@@ -136,6 +163,7 @@ class MyNotepad:
         if self.draw_space_checked.get() == 1:
             self.startx, self.starty = 0, 0
             self.endx, self.endy = 0, 0
+            self.textbox.pack_configure(expand=False)
             self.draw_space = tk.Canvas(self.root, bg='white')
             self.draw_space.pack(padx=10,pady=10,fill="both")
             self.brush_size = 3
@@ -143,6 +171,7 @@ class MyNotepad:
             self.draw_space.bind('<Button-3>', self.erase)
         else:
             self.draw_space.pack_forget()
+            self.textbox.pack_configure(expand=True)
 
     def draw(self, event):
         x = event.x
@@ -183,6 +212,8 @@ class MyNotepad:
         open_file_path = filedialog.askopenfilename(
             title="Select a Text File", filetypes=[("Text files", "*.txt")])
         if open_file_path:
+            file_title = open_file_path
+            self.root.title(f"My Notepad - {file_title}")
             with open(open_file_path, 'r') as file:
                 content = file.read()
                 self.textbox.delete(1.0, tk.END)
