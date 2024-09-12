@@ -1,3 +1,5 @@
+##NOTE: PLEASE ALLOW 5 SECONDS TO LOAD BEFORE RUNNING
+
 import tkinter as tk
 from tkinter import messagebox, filedialog, PhotoImage, INSERT
 import random
@@ -18,6 +20,8 @@ class MyNotepad:
         self.char_count_checked = tk.IntVar()
         self.draw_space_var = tk.StringVar()
         self.draw_space_checked = tk.IntVar()
+        self.post_it_var = tk.StringVar()
+        self.post_it_checked = tk.IntVar()
 
         self.char_count_label = tk.Label(self.char_count, textvariable=self.char_count_var, anchor='w',padx=5,pady=5, font=('Arial',12,'italic'))
         self.char_count_label.pack(fill='x')
@@ -62,6 +66,7 @@ class MyNotepad:
         self.actionmenu.add_command(label="Set all text to UPPERCASE", command=self.set_all_to_uppercase)
         self.settingsmenu.add_checkbutton(label="Show Character Count", command=self.character_count,variable=self.char_count_checked)
         self.settingsmenu.add_checkbutton(label="Add Canvas", command=self.create_draw_space,variable=self.draw_space_checked)
+        self.settingsmenu.add_checkbutton(label="Add Post-it Note", command=self.create_post_it,variable=self.post_it_checked)
         self.backgroundmenu.add_command(label="Light Blue", command=lambda: self.change_background("lightblue"))
         self.backgroundmenu.add_command(label="Light Yellow", command=lambda: self.change_background("lightyellow"))
         self.backgroundmenu.add_command(label="Red", command=lambda: self.change_background("red"))
@@ -78,6 +83,7 @@ class MyNotepad:
         self.menubar.add_cascade(menu=self.fontmenu, label='Fonts')
         self.menubar.add_cascade(menu=self.settingsmenu, label='Settings')
  
+        self.fontsizesmenu.add_command(label='14',font=('Arial',14),command=lambda: self.set_new_font_size(14))
         self.fontsizesmenu.add_command(label='16',font=('Arial',16),command=lambda: self.set_new_font_size(16))
         self.fontsizesmenu.add_command(label='18',font=('Arial',18),command=lambda: self.set_new_font_size(18))
         self.fontsizesmenu.add_command(label='20',font=('Arial',20),command=lambda: self.set_new_font_size(20))
@@ -85,6 +91,7 @@ class MyNotepad:
         self.fontsizesmenu.add_command(label='24',font=('Arial',24),command=lambda: self.set_new_font_size(24))
         self.fontsizesmenu.add_command(label='26',font=('Arial',26),command=lambda: self.set_new_font_size(26))
         self.fontsizesmenu.add_command(label='28',font=('Arial',28),command=lambda: self.set_new_font_size(28))
+        self.fontsizesmenu.add_command(label='30',font=('Arial',30),command=lambda: self.set_new_font_size(30))
         self.fontweightmenu.add_command(label='Normal',font=('Arial',12, 'normal'),command=lambda: self.set_new_font_weight('normal'))
         self.fontweightmenu.add_command(label='Italic',font=('Arial',12, 'italic'),command=lambda: self.set_new_font_weight('italic'))
         self.fontweightmenu.add_command(label='Bold',font=('Arial',12, 'bold'),command=lambda: self.set_new_font_weight('bold'))
@@ -172,15 +179,34 @@ class MyNotepad:
         if self.draw_space_checked.get() == 1:
             self.startx, self.starty = 0, 0
             self.endx, self.endy = 0, 0
-            self.textbox.pack_configure(expand=False)
-            self.draw_space = tk.Canvas(self.root, bg='white')
+            self.draw_space_window = tk.Toplevel(self.root)
+            self.draw_space_window.title("Draw Space")
+            self.draw_space = tk.Canvas(self.draw_space_window, bg='white')
             self.draw_space.pack(padx=10,pady=10,fill="both")
             self.brush_size = 3
             self.draw_space.bind('<B1-Motion>', self.draw)
             self.draw_space.bind('<Button-3>', self.erase)
         else:
-            self.draw_space.pack_forget()
-            self.textbox.pack_configure(expand=True)
+            self.draw_space_window.destroy()
+    
+    def create_post_it(self):
+        if self.post_it_checked.get() == 1:
+            self.post_it_window = tk.Toplevel(self.root)
+            self.post_it_window.title("Post It Note")
+            line1var = tk.IntVar
+            line1 = tk.Checkbutton(self.post_it_window, variable=line1var, onvalue=1, offvalue=0)
+            line1.pack(fill="x")
+            line2var = tk.IntVar
+            line2 = tk.Checkbutton(self.post_it_window, variable=line2var, onvalue=1, offvalue=0)
+            line2.pack(fill="x")
+            line3var = tk.IntVar
+            line3 = tk.Checkbutton(self.post_it_window, variable=line3var, onvalue=1, offvalue=0)
+            line3.pack(fill="x")
+            line4var = tk.IntVar
+            line4 = tk.Checkbutton(self.post_it_window, variable=line4var, onvalue=1, offvalue=0)
+            line4.pack(fill="x")
+        else:
+            self.post_it_window.destroy()
 
     def draw(self, event):
         x = event.x
@@ -286,3 +312,5 @@ class MyNotepad:
         
 if __name__ == "__main__":
     MyNotepad()
+
+##NOTE: PLEASE ALLOW 5 SECONDS TO LOAD BEFORE RUNNING
