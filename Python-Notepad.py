@@ -6,7 +6,6 @@ import random
 import string
 
 class MyNotepad:
-    
     def __init__(self):
         self.root = tk.Tk()
         self.root.geometry("600x800")
@@ -15,22 +14,18 @@ class MyNotepad:
         self.root.configure(bg='lightblue')
         self.char_count = tk.Frame(self.root,bd=1,relief='sunken')
         self.char_count.pack(side='bottom',fill='x')
-
         self.char_count_var = tk.StringVar()
         self.char_count_checked = tk.IntVar()
         self.draw_space_var = tk.StringVar()
         self.draw_space_checked = tk.IntVar()
         self.post_it_var = tk.StringVar()
         self.post_it_checked = tk.IntVar()
-
         self.char_count_label = tk.Label(self.char_count, textvariable=self.char_count_var, anchor='w',padx=5,pady=5, font=('Arial',12,'italic'))
         self.char_count_label.pack(fill='x')
-
         #default font settings
         self.current_font = 'Arial'
         self.font_size = 14
         self.font_weight = 'normal'
-        
         self.menubar = tk.Menu(self.root)
         self.filemenu = tk.Menu(self.menubar, tearoff=0, font=('Arial',12))
         self.actionmenu = tk.Menu(self.menubar, tearoff=0, font=('Arial',12))
@@ -66,7 +61,7 @@ class MyNotepad:
         self.actionmenu.add_command(label="Set all text to UPPERCASE", command=self.set_all_to_uppercase)
         self.settingsmenu.add_checkbutton(label="Show Character Count", command=self.character_count,variable=self.char_count_checked)
         self.settingsmenu.add_checkbutton(label="Add Canvas", command=self.create_draw_space,variable=self.draw_space_checked)
-        self.settingsmenu.add_checkbutton(label="Add Post-it Note", command=self.create_post_it,variable=self.post_it_checked)
+        self.settingsmenu.add_checkbutton(label="Add Checklist", command=self.create_post_it,variable=self.post_it_checked)
         self.backgroundmenu.add_command(label="Light Blue", command=lambda: self.change_background("lightblue"))
         self.backgroundmenu.add_command(label="Light Yellow", command=lambda: self.change_background("lightyellow"))
         self.backgroundmenu.add_command(label="Red", command=lambda: self.change_background("red"))
@@ -82,7 +77,6 @@ class MyNotepad:
         self.menubar.add_cascade(menu=self.actionmenu, label="Actions")
         self.menubar.add_cascade(menu=self.fontmenu, label='Fonts')
         self.menubar.add_cascade(menu=self.settingsmenu, label='Settings')
- 
         self.fontsizesmenu.add_command(label='14',font=('Arial',14),command=lambda: self.set_new_font_size(14))
         self.fontsizesmenu.add_command(label='16',font=('Arial',16),command=lambda: self.set_new_font_size(16))
         self.fontsizesmenu.add_command(label='18',font=('Arial',18),command=lambda: self.set_new_font_size(18))
@@ -108,35 +102,28 @@ class MyNotepad:
         self.fontsmenu.add_command(label='MS Sans Serif',font=('MS Sans Serif',12),command=lambda: self.set_new_font('MS Sans Serif'))
         self.fontsmenu.add_command(label='Roman',font=('Roman',12),command=lambda: self.set_new_font('Roman'))
         self.fontsmenu.add_command(label='System',font=('System',12),command=lambda: self.set_new_font('System'))
-        
         self.root.config(menu=self.menubar)
-        
         self.textbox = tk.Text(self.root,font=(self.current_font,self.font_size,self.font_weight), selectbackground="lightgreen", selectforeground="black", undo=True)
         self.textbox.pack(padx=10,pady=10,expand=True,fill="both")
-        
         #shortcuts
         self.textbox.bind("<Control-{>",self.highlight)
         self.textbox.bind("<Control-}>",self.remove_highlight)
         self.textbox.bind("<Control-|>",self.clear)
         self.textbox.bind("<Control-o>",self.open_file)
         self.textbox.bind("<Control-s>",self.save_as_text_file)
-
         self.root.after(0, self.check_state)
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.root.mainloop()
-        
     def undo(self):
         try:
             self.textbox.edit_undo()
         except:
             pass
-
     def redo(self):
         try:
             self.textbox.edit_redo()
         except:
             pass
-        
     def add_image(self):
         image_file_path = filedialog.askopenfilename(
             title="Select a PNG File", filetypes=[("Image files", "*.png")])
@@ -145,17 +132,13 @@ class MyNotepad:
             cursor_pos = self.textbox.index(INSERT)
             image = PhotoImage(file=image_file_path)
             self.textbox.image_create(cursor_pos, image=image)
-            
     def change_alignment(self,alignment):
             self.textbox.tag_config(alignment,justify=alignment)
             self.textbox.tag_add(alignment,'1.0',tk.END)
-
     def change_background(self, colour):
         self.root.configure(bg=colour)
-        
     def change_font_colour(self, colour):
         self.textbox.configure(fg=colour)
-
     def highlight(self,event=""):
         #event = "" sets default value for event so it is not always needed as an arg
         try:
@@ -165,7 +148,6 @@ class MyNotepad:
             self.textbox.tag_config('sel_txt', background='yellow',foreground='black')
         except:
             messagebox.showwarning(message="No text was selected for highlighting.")
-            
     def remove_highlight(self,event=""):
         try:
             start = self.textbox.index("sel.first")
@@ -174,7 +156,6 @@ class MyNotepad:
             self.textbox.tag_remove("sel_txt",start,end)
         except:
             messagebox.showwarning(message="No text was selected to remove highlighting.")
-      
     def create_draw_space(self):
         if self.draw_space_checked.get() == 1:
             self.startx, self.starty = 0, 0
@@ -188,61 +169,55 @@ class MyNotepad:
             self.draw_space.bind('<Button-3>', self.erase)
         else:
             self.draw_space_window.destroy()
-    
     def create_post_it(self):
         if self.post_it_checked.get() == 1:
             self.post_it_window = tk.Toplevel(self.root)
-            self.post_it_window.title("Post It Note")
+            self.post_it_window.title("Checklist")
+            self.post_it_window.geometry("250x200")
+            box_frame = tk.Frame(self.post_it_window)
             line1var = tk.IntVar
-            line1 = tk.Checkbutton(self.post_it_window, variable=line1var, onvalue=1, offvalue=0,text="Task 1")
-            line1.pack(fill="x")
+            line1 = tk.Checkbutton(box_frame, variable=line1var, onvalue=1, offvalue=0,text="Task 1")
+            line1.pack(fill="x",pady=10,side="top")
             line2var = tk.IntVar
-            line2 = tk.Checkbutton(self.post_it_window, variable=line2var, onvalue=1, offvalue=0,text="Task 2")
-            line2.pack(fill="x")
+            line2 = tk.Checkbutton(box_frame, variable=line2var, onvalue=1, offvalue=0,text="Task 2")
+            line2.pack(fill="x",pady=10,side="top")
             line3var = tk.IntVar
-            line3 = tk.Checkbutton(self.post_it_window, variable=line3var, onvalue=1, offvalue=0,text="Task 3")
-            line3.pack(fill="x")
+            line3 = tk.Checkbutton(box_frame, variable=line3var, onvalue=1, offvalue=0,text="Task 3")
+            line3.pack(fill="x",pady=10,side="top")
             line4var = tk.IntVar
-            line4 = tk.Checkbutton(self.post_it_window, variable=line4var, onvalue=1, offvalue=0,text="Task 4")
-            line4.pack(fill="x")
+            line4 = tk.Checkbutton(box_frame, variable=line4var, onvalue=1, offvalue=0,text="Task 4")
+            line4.pack(fill="x",pady=10,side="top")
+            box_frame.pack(side="left",padx=10,pady=10)
         else:
             self.post_it_window.destroy()
-
     def draw(self, event):
         x = event.x
         y = event.y
         self.draw_space.create_oval((x-self.brush_size/2,y-self.brush_size/2,x+self.brush_size/2,y+self.brush_size/2), fill='black')
-        
     def erase(self, event):
         self.draw_space.delete('all')
-        
     def check_state(self):
         if self.char_count_checked.get() == 1:
           self.character_count()
         else:
             self.char_count_var.set("Character count: Disabled")
         self.root.after(2300,self.check_state)
-
     def character_count(self):
         text = self.textbox.get('1.0',tk.END)
         length = len(text) - 1
         status = "Character count: " + str(length)
         self.char_count_var.set(status)
-                   
     def on_closing(self):
         if messagebox.askyesno(title="Quit?", message="Are you sure you want to quit the program? All data will be lost."):
             self.root.destroy()
-            
     def clear(self,event=""):
         self.textbox.delete('1.0', tk.END)
-    
     def save_as_text_file(self,event=""):
         file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
         if file_path:
             with open(file_path, 'w') as file:
                 text_content = self.textbox.get("1.0", tk.END)
                 file.write(text_content)
-            
     def open_file(self,event=""):
         open_file_path = filedialog.askopenfilename(
             title="Select a Text File", filetypes=[("Text files", "*.txt")])
@@ -253,15 +228,12 @@ class MyNotepad:
                 content = file.read()
                 self.textbox.delete(1.0, tk.END)
                 self.textbox.insert(tk.END, content)
-
     def save_all_to_clipboard(self):
         self.root.clipboard_clear()
         self.root.clipboard_append(self.textbox.get('1.0',tk.END))
-    
     def paste_from_clipboard(self):
         to_paste = self.root.clipboard_get()
         self.textbox.insert(tk.INSERT,to_paste)
-    
     def set_new_font(self,font):
         try:
             font_code = ''.join(random.choices(string.ascii_letters, k=6))
@@ -273,7 +245,6 @@ class MyNotepad:
         except:
             self.current_font = font
             self.textbox.configure(font=(self.current_font,self.font_size,self.font_weight))
-
     def set_new_font_size(self,size):
         try:
             size_code = ''.join(random.choices(string.ascii_letters, k=6))
@@ -285,7 +256,6 @@ class MyNotepad:
         except:
             self.font_size = size
             self.textbox.configure(font=(self.current_font,self.font_size,self.font_weight))
-
     def set_new_font_weight(self,weight):
         try:
             weight_code = ''.join(random.choices(string.ascii_letters, k=6))
@@ -297,19 +267,16 @@ class MyNotepad:
         except:
             self.font_weight = weight
             self.textbox.configure(font=(self.current_font,self.font_size,self.font_weight))
-
     def set_to_lowercase(self):
         text_to_lower = self.textbox.get('1.0',tk.END)
         text_to_lower = text_to_lower.lower()
         self.textbox.delete('1.0',tk.END)
         self.textbox.insert(tk.INSERT,text_to_lower)
-        
     def set_all_to_uppercase(self):
         text_to_upper = self.textbox.get('1.0',tk.END)
         text_to_upper = text_to_upper.upper()
         self.textbox.delete('1.0',tk.END)
         self.textbox.insert(tk.INSERT,text_to_upper)
-        
 if __name__ == "__main__":
     MyNotepad()
 
