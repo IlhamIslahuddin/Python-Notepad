@@ -194,16 +194,16 @@ class MyNotepad:
             self.post_it_window = tk.Toplevel(self.root)
             self.post_it_window.title("Post It Note")
             line1var = tk.IntVar
-            line1 = tk.Checkbutton(self.post_it_window, variable=line1var, onvalue=1, offvalue=0)
+            line1 = tk.Checkbutton(self.post_it_window, variable=line1var, onvalue=1, offvalue=0,text="Task 1")
             line1.pack(fill="x")
             line2var = tk.IntVar
-            line2 = tk.Checkbutton(self.post_it_window, variable=line2var, onvalue=1, offvalue=0)
+            line2 = tk.Checkbutton(self.post_it_window, variable=line2var, onvalue=1, offvalue=0,text="Task 2")
             line2.pack(fill="x")
             line3var = tk.IntVar
-            line3 = tk.Checkbutton(self.post_it_window, variable=line3var, onvalue=1, offvalue=0)
+            line3 = tk.Checkbutton(self.post_it_window, variable=line3var, onvalue=1, offvalue=0,text="Task 3")
             line3.pack(fill="x")
             line4var = tk.IntVar
-            line4 = tk.Checkbutton(self.post_it_window, variable=line4var, onvalue=1, offvalue=0)
+            line4 = tk.Checkbutton(self.post_it_window, variable=line4var, onvalue=1, offvalue=0,text="Task 4")
             line4.pack(fill="x")
         else:
             self.post_it_window.destroy()
