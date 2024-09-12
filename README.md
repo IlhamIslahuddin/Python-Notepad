@@ -5,6 +5,7 @@ I started off with the tkinter basics as seen in:
 <a href="(https://github.com/IlhamIslahuddin/test-mini-projects/tree/main/tkinter-basics)"></a><p>Link to folder: https://github.com/IlhamIslahuddin/test-mini-projects/tree/main/tkinter-basics</p>
 
 Extensive list of features:
+
 -Open text files
 -Save as text file (Note: text files do not have formatting so all formatting will be lost)
 -Add PNG image to textbox
