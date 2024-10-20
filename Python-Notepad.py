@@ -162,8 +162,10 @@ class MyNotepad:
             self.endx, self.endy = 0, 0
             self.draw_space_window = tk.Toplevel(self.root)
             self.draw_space_window.title("Draw Space")
+            self.draw_space_window.geometry("600x400")
+            self.draw_space_window.configure(bg='lightblue')
             self.draw_space = tk.Canvas(self.draw_space_window, bg='white')
-            self.draw_space.pack(padx=10,pady=10,fill="both")
+            self.draw_space.pack(padx=10,pady=10,expand=True,fill="both")
             self.brush_size = 3
             self.draw_space.bind('<B1-Motion>', self.draw)
             self.draw_space.bind('<Button-3>', self.erase)
@@ -174,20 +176,28 @@ class MyNotepad:
             self.post_it_window = tk.Toplevel(self.root)
             self.post_it_window.title("Checklist")
             self.post_it_window.geometry("250x200")
-            box_frame = tk.Frame(self.post_it_window)
+            self.post_it_window.resizable(False, False)
+            self.post_it_window.configure(bg='lightblue')
             line1var = tk.IntVar
-            line1 = tk.Checkbutton(box_frame, variable=line1var, onvalue=1, offvalue=0,text="Task 1")
-            line1.pack(fill="x",pady=10,side="top")
+            line1 = tk.Checkbutton(self.post_it_window, variable=line1var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
+            line1.grid(column=1,row=1,pady=10,padx=10)
+            entry1 = tk.Entry(self.post_it_window)
+            entry1.grid(column=2,row=1)
             line2var = tk.IntVar
-            line2 = tk.Checkbutton(box_frame, variable=line2var, onvalue=1, offvalue=0,text="Task 2")
-            line2.pack(fill="x",pady=10,side="top")
+            line2 = tk.Checkbutton(self.post_it_window, variable=line2var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
+            line2.grid(column=1,row=2,pady=10,padx=10)
+            entry2 = tk.Entry(self.post_it_window)
+            entry2.grid(column=2,row=2)
             line3var = tk.IntVar
-            line3 = tk.Checkbutton(box_frame, variable=line3var, onvalue=1, offvalue=0,text="Task 3")
-            line3.pack(fill="x",pady=10,side="top")
+            line3 = tk.Checkbutton(self.post_it_window, variable=line3var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
+            line3.grid(column=1,row=3,pady=10,padx=10)
+            entry3 = tk.Entry(self.post_it_window)
+            entry3.grid(column=2,row=3)
             line4var = tk.IntVar
-            line4 = tk.Checkbutton(box_frame, variable=line4var, onvalue=1, offvalue=0,text="Task 4")
-            line4.pack(fill="x",pady=10,side="top")
-            box_frame.pack(side="left",padx=10,pady=10)
+            line4 = tk.Checkbutton(self.post_it_window, variable=line4var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
+            line4.grid(column=1,row=4,pady=10,padx=10)
+            entry4 = tk.Entry(self.post_it_window)
+            entry4.grid(column=2,row=4)
         else:
             self.post_it_window.destroy()
     def draw(self, event):
