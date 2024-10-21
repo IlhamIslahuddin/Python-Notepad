@@ -21,6 +21,8 @@ Extensive list of features:
 -Change font family
 -Change font colour
 -Change font size
+-Change text alignment
 -Change font weight (bold,italic,underline)
 -Change window outline colour
 -Change window size
+-Checklist
