@@ -102,6 +102,8 @@ class MyNotepad:
         self.fontsmenu.add_command(label='MS Sans Serif',font=('MS Sans Serif',12),command=lambda: self.set_new_font('MS Sans Serif'))
         self.fontsmenu.add_command(label='Roman',font=('Roman',12),command=lambda: self.set_new_font('Roman'))
         self.fontsmenu.add_command(label='System',font=('System',12),command=lambda: self.set_new_font('System'))
+        self.fontsmenu.add_command(label='Terminal',font=('Terminal',12),command=lambda: self.set_new_font('Terminal'))
+        self.fontsmenu.add_command(label='Stencil',font=('Stencil',12),command=lambda: self.set_new_font('Stencil'))
         self.root.config(menu=self.menubar)
         self.textbox = tk.Text(self.root,font=(self.current_font,self.font_size,self.font_weight), selectbackground="lightgreen", selectforeground="black", undo=True)
         self.textbox.pack(padx=10,pady=10,expand=True,fill="both")
