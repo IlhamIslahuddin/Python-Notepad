@@ -169,7 +169,8 @@ class MyNotepad:
             self.brush_size = 3
             self.draw_space.bind('<B1-Motion>', self.draw)
             self.draw_space.bind('<Button-3>', self.erase)
-            self.draw_space_window.protocol("WM_DELETE_WINDOW",self.on_closing_subwindow("canvas"))
+            if self.draw_space_window.winfo_exists():
+                self.draw_space_window.protocol("WM_DELETE_WINDOW",lambda: self.on_closing_subwindow("canvas"))
         else:
             if self.draw_space_window.winfo_exists():
                 self.draw_space_window.destroy()
@@ -185,8 +186,8 @@ class MyNotepad:
             line1var = tk.IntVar
             line1 = tk.Checkbutton(self.checklist_window, variable=line1var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
             line1.grid(column=1,row=2,pady=10,padx=10)
-            entry1 = tk.Entry(self.checklist_window,font=("Arial",12,"bold"))
-            entry1.grid(column=2,row=2,padx=10,ipady=2,ipadx=10)
+            self.entry1 = tk.Entry(self.checklist_window,font=("Arial",12,"bold"))
+            self.entry1.grid(column=2,row=2,padx=10,ipady=2,ipadx=10)
             line2var = tk.IntVar
             line2 = tk.Checkbutton(self.checklist_window, variable=line2var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
             line2.grid(column=1,row=3,pady=10,padx=10)
@@ -207,11 +208,11 @@ class MyNotepad:
             line5.grid(column=1,row=6,pady=10,padx=10)
             entry5 = tk.Entry(self.checklist_window,font=("Arial",12,"bold"))
             entry5.grid(column=2,row=6,padx=10,ipady=2,ipadx=10)
-            self.checklist_window.protocol("WM_DELETE_WINDOW",self.on_closing_subwindow("checklist"))
+            if self.checklist_window.winfo_exists():
+                self.checklist_window.protocol("WM_DELETE_WINDOW",lambda: self.on_closing_subwindow("checklist"))
         else:
             if self.checklist_window.winfo_exists():
                 self.checklist_window.destroy()
-
     def draw(self, event):
         x = event.x
         y = event.y
@@ -237,8 +238,12 @@ class MyNotepad:
             self.draw_space_checked.set(0)
             self.draw_space_window.destroy()
         elif window == "checklist" and self.checklist_window.winfo_exists():
-            self.checklist_checked.set(0)
-            self.checklist_window.destroy()
+            if messagebox.askyesno(title="Delete checklist?", message="Make sure all tasks are done before deleting."):
+                self.checklist_checked.set(0)
+                self.checklist_window.destroy()
+    def task_done(self,entrynum):
+        if entrynum == 1:
+            self.entry1.config(fg="green")
     def clear(self,event=""):
         self.textbox.delete('1.0', tk.END)
     def save_as_text_file(self,event=""):
@@ -252,7 +257,7 @@ class MyNotepad:
             title="Select a Text File", filetypes=[("Text files", "*.txt")])
         if open_file_path:
             file_title = open_file_path
-            self.root.title(f"My Notepad - {file_title}")
+            self.root.title(f"My Notepad - Opened: {file_title}")
             with open(open_file_path, 'r') as file:
                 content = file.read()
                 self.textbox.delete(1.0, tk.END)
