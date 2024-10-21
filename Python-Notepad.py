@@ -19,7 +19,7 @@ class MyNotepad:
         self.draw_space_var = tk.StringVar()
         self.draw_space_checked = tk.IntVar()
         self.post_it_var = tk.StringVar()
-        self.post_it_checked = tk.IntVar()
+        self.checklist_checked = tk.IntVar()
         self.char_count_label = tk.Label(self.char_count, textvariable=self.char_count_var, anchor='w',padx=5,pady=5, font=('Arial',12,'italic'))
         self.char_count_label.pack(fill='x')
         #default font settings
@@ -61,7 +61,7 @@ class MyNotepad:
         self.actionmenu.add_command(label="Set all text to UPPERCASE", command=self.set_all_to_uppercase)
         self.settingsmenu.add_checkbutton(label="Show Character Count", command=self.character_count,variable=self.char_count_checked)
         self.settingsmenu.add_checkbutton(label="Add Canvas", command=self.create_draw_space,variable=self.draw_space_checked)
-        self.settingsmenu.add_checkbutton(label="Add Checklist", command=self.create_post_it,variable=self.post_it_checked)
+        self.settingsmenu.add_checkbutton(label="Add Checklist", command=self.create_checklist,variable=self.checklist_checked)
         self.backgroundmenu.add_command(label="Light Blue", command=lambda: self.change_background("lightblue"))
         self.backgroundmenu.add_command(label="Light Yellow", command=lambda: self.change_background("lightyellow"))
         self.backgroundmenu.add_command(label="Red", command=lambda: self.change_background("red"))
@@ -169,37 +169,49 @@ class MyNotepad:
             self.brush_size = 3
             self.draw_space.bind('<B1-Motion>', self.draw)
             self.draw_space.bind('<Button-3>', self.erase)
+            self.draw_space_window.protocol("WM_DELETE_WINDOW",self.on_closing_subwindow("canvas"))
         else:
-            self.draw_space_window.destroy()
-    def create_post_it(self):
-        if self.post_it_checked.get() == 1:
-            self.post_it_window = tk.Toplevel(self.root)
-            self.post_it_window.title("Checklist")
-            self.post_it_window.geometry("250x200")
-            self.post_it_window.resizable(False, False)
-            self.post_it_window.configure(bg='lightblue')
+            if self.draw_space_window.winfo_exists():
+                self.draw_space_window.destroy()
+    def create_checklist(self):
+        if self.checklist_checked.get() == 1:
+            self.checklist_window = tk.Toplevel(self.root)
+            self.checklist_window.title("Checklist")
+            self.checklist_window.geometry("300x280")
+            self.checklist_window.resizable(False, False)
+            self.checklist_window.configure(bg='lightblue')
+            label = tk.Label(self.checklist_window,text="To Do  ",font=("Arial",20,"bold"),bg="light blue")
+            label.grid(row=1,column=2,pady=4,padx=2)
             line1var = tk.IntVar
-            line1 = tk.Checkbutton(self.post_it_window, variable=line1var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
-            line1.grid(column=1,row=1,pady=10,padx=10)
-            entry1 = tk.Entry(self.post_it_window)
-            entry1.grid(column=2,row=1)
+            line1 = tk.Checkbutton(self.checklist_window, variable=line1var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
+            line1.grid(column=1,row=2,pady=10,padx=10)
+            entry1 = tk.Entry(self.checklist_window,font=("Arial",12,"bold"))
+            entry1.grid(column=2,row=2,padx=10,ipady=2,ipadx=10)
             line2var = tk.IntVar
-            line2 = tk.Checkbutton(self.post_it_window, variable=line2var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
-            line2.grid(column=1,row=2,pady=10,padx=10)
-            entry2 = tk.Entry(self.post_it_window)
-            entry2.grid(column=2,row=2)
+            line2 = tk.Checkbutton(self.checklist_window, variable=line2var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
+            line2.grid(column=1,row=3,pady=10,padx=10)
+            entry2 = tk.Entry(self.checklist_window,font=("Arial",12,"bold"))
+            entry2.grid(column=2,row=3,padx=10,ipady=2,ipadx=10)
             line3var = tk.IntVar
-            line3 = tk.Checkbutton(self.post_it_window, variable=line3var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
-            line3.grid(column=1,row=3,pady=10,padx=10)
-            entry3 = tk.Entry(self.post_it_window)
-            entry3.grid(column=2,row=3)
+            line3 = tk.Checkbutton(self.checklist_window, variable=line3var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
+            line3.grid(column=1,row=4,pady=10,padx=10)
+            entry3 = tk.Entry(self.checklist_window,font=("Arial",12,"bold"))
+            entry3.grid(column=2,row=4,padx=10,ipady=2,ipadx=10)
             line4var = tk.IntVar
-            line4 = tk.Checkbutton(self.post_it_window, variable=line4var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
-            line4.grid(column=1,row=4,pady=10,padx=10)
-            entry4 = tk.Entry(self.post_it_window)
-            entry4.grid(column=2,row=4)
+            line4 = tk.Checkbutton(self.checklist_window, variable=line4var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
+            line4.grid(column=1,row=5,pady=10,padx=10)
+            entry4 = tk.Entry(self.checklist_window,font=("Arial",12,"bold"))
+            entry4.grid(column=2,row=5,padx=10,ipady=2,ipadx=10)
+            line5var = tk.IntVar
+            line5 = tk.Checkbutton(self.checklist_window, variable=line5var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
+            line5.grid(column=1,row=6,pady=10,padx=10)
+            entry5 = tk.Entry(self.checklist_window,font=("Arial",12,"bold"))
+            entry5.grid(column=2,row=6,padx=10,ipady=2,ipadx=10)
+            self.checklist_window.protocol("WM_DELETE_WINDOW",self.on_closing_subwindow("checklist"))
         else:
-            self.post_it_window.destroy()
+            if self.checklist_window.winfo_exists():
+                self.checklist_window.destroy()
+
     def draw(self, event):
         x = event.x
         y = event.y
@@ -220,6 +232,13 @@ class MyNotepad:
     def on_closing(self):
         if messagebox.askyesno(title="Quit?", message="Are you sure you want to quit the program? All data will be lost."):
             self.root.destroy()
+    def on_closing_subwindow(self,window):
+        if window == "canvas" and self.draw_space_window.winfo_exists():
+            self.draw_space_checked.set(0)
+            self.draw_space_window.destroy()
+        elif window == "checklist" and self.checklist_window.winfo_exists():
+            self.checklist_checked.set(0)
+            self.checklist_window.destroy()
     def clear(self,event=""):
         self.textbox.delete('1.0', tk.END)
     def save_as_text_file(self,event=""):
