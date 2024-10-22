@@ -187,31 +187,31 @@ class MyNotepad:
             self.checklist_window.configure(bg='lightblue')
             label = tk.Label(self.checklist_window,text="To Do  ",font=("Arial",20,"bold"),bg="light blue")
             label.grid(row=1,column=2,pady=4,padx=2)
-            line1var = tk.IntVar
-            line1 = tk.Checkbutton(self.checklist_window, variable=line1var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
+            self.line1var = tk.IntVar()
+            line1 = tk.Checkbutton(self.checklist_window, variable=self.line1var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue",command=lambda: self.task_done(1))
             line1.grid(column=1,row=2,pady=10,padx=10)
             self.entry1 = tk.Entry(self.checklist_window,font=("Arial",12,"bold"))
             self.entry1.grid(column=2,row=2,padx=10,ipady=2,ipadx=10)
-            line2var = tk.IntVar
-            line2 = tk.Checkbutton(self.checklist_window, variable=line2var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
+            self.line2var = tk.IntVar()
+            line2 = tk.Checkbutton(self.checklist_window, variable=self.line2var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue",command=lambda: self.task_done(2))
             line2.grid(column=1,row=3,pady=10,padx=10)
-            entry2 = tk.Entry(self.checklist_window,font=("Arial",12,"bold"))
-            entry2.grid(column=2,row=3,padx=10,ipady=2,ipadx=10)
-            line3var = tk.IntVar
-            line3 = tk.Checkbutton(self.checklist_window, variable=line3var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
+            self.entry2 = tk.Entry(self.checklist_window,font=("Arial",12,"bold"))
+            self.entry2.grid(column=2,row=3,padx=10,ipady=2,ipadx=10)
+            self.line3var = tk.IntVar()
+            line3 = tk.Checkbutton(self.checklist_window, variable=self.line3var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue",command=lambda: self.task_done(3))
             line3.grid(column=1,row=4,pady=10,padx=10)
-            entry3 = tk.Entry(self.checklist_window,font=("Arial",12,"bold"))
-            entry3.grid(column=2,row=4,padx=10,ipady=2,ipadx=10)
-            line4var = tk.IntVar
-            line4 = tk.Checkbutton(self.checklist_window, variable=line4var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
+            self.entry3 = tk.Entry(self.checklist_window,font=("Arial",12,"bold"))
+            self.entry3.grid(column=2,row=4,padx=10,ipady=2,ipadx=10)
+            self.line4var = tk.IntVar()
+            line4 = tk.Checkbutton(self.checklist_window, variable=self.line4var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue",command=lambda: self.task_done(4))
             line4.grid(column=1,row=5,pady=10,padx=10)
-            entry4 = tk.Entry(self.checklist_window,font=("Arial",12,"bold"))
-            entry4.grid(column=2,row=5,padx=10,ipady=2,ipadx=10)
-            line5var = tk.IntVar
-            line5 = tk.Checkbutton(self.checklist_window, variable=line5var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue")
+            self.entry4 = tk.Entry(self.checklist_window,font=("Arial",12,"bold"))
+            self.entry4.grid(column=2,row=5,padx=10,ipady=2,ipadx=10)
+            self.line5var = tk.IntVar()
+            line5 = tk.Checkbutton(self.checklist_window, variable=self.line5var, onvalue=1, offvalue=0,bg="light blue",activebackground="light blue",command=lambda: self.task_done(5))
             line5.grid(column=1,row=6,pady=10,padx=10)
-            entry5 = tk.Entry(self.checklist_window,font=("Arial",12,"bold"))
-            entry5.grid(column=2,row=6,padx=10,ipady=2,ipadx=10)
+            self.entry5 = tk.Entry(self.checklist_window,font=("Arial",12,"bold"))
+            self.entry5.grid(column=2,row=6,padx=10,ipady=2,ipadx=10)
             if self.checklist_window.winfo_exists():
                 self.checklist_window.protocol("WM_DELETE_WINDOW",lambda: self.on_closing_subwindow("checklist"))
         else:
@@ -251,7 +251,30 @@ class MyNotepad:
                 self.checklist_window.destroy()
     def task_done(self,entrynum):
         if entrynum == 1:
-            self.entry1.config(fg="green")
+            if  self.line1var.get() == 1:
+                self.entry1.config(fg="green")
+            else:
+                self.entry1.config(fg="black")
+        elif entrynum == 2:
+            if  self.line2var.get() == 1:
+                self.entry2.config(fg="green")
+            else:
+                self.entry2.config(fg="black")
+        elif entrynum == 3:
+            if  self.line3var.get() == 1:
+                self.entry3.config(fg="green")
+            else:
+                self.entry3.config(fg="black")
+        elif entrynum == 4:
+            if  self.line4var.get() == 1:
+                self.entry4.config(fg="green")
+            else:
+                self.entry4.config(fg="black")
+        elif entrynum == 5:
+            if  self.line5var.get() == 1:
+                self.entry5.config(fg="green")
+            else:
+                self.entry5.config(fg="black")
     def clear(self,event=""):
         self.textbox.delete('1.0', tk.END)
     def save_as_text_file(self,event=""):
