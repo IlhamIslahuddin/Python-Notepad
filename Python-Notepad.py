@@ -166,10 +166,12 @@ class MyNotepad:
             self.draw_space_window.title("Draw Space")
             self.draw_space_window.geometry("600x400")
             self.draw_space_window.configure(bg='lightblue')
-            self.draw_space = tk.Canvas(self.draw_space_window, bg='white')
+            self.draw_space = tk.Canvas(self.draw_space_window, bg='white',bd=2)
             self.draw_space.pack(padx=10,pady=10,expand=True,fill="both")
             self.brush_size = 3
-            self.draw_space.bind('<B1-Motion>', self.draw)
+            self.draw_space.bind('<Button-1>', self.start_line)
+            self.draw_space.bind('<B1-Motion>', self.draw_line)
+            self.draw_space.bind('<ButtonRelease-1>', self.end_line)
             self.draw_space.bind('<Button-3>', self.erase)
             if self.draw_space_window.winfo_exists():
                 self.draw_space_window.protocol("WM_DELETE_WINDOW",lambda: self.on_closing_subwindow("canvas"))
@@ -215,12 +217,16 @@ class MyNotepad:
         else:
             if self.checklist_window.winfo_exists():
                 self.checklist_window.destroy()
-    def draw(self, event):
-        x = event.x
-        y = event.y
-        self.draw_space.create_oval((x-self.brush_size/2,y-self.brush_size/2,x+self.brush_size/2,y+self.brush_size/2), fill='black')
     def erase(self, event):
         self.draw_space.delete('all')
+    def start_line(self,event):
+        self.xcoord, self.ycoord = event.x,event.y
+    def draw_line(self,event):
+        if self.xcoord is not None and self.ycoord is not None:
+            self.draw_space.create_line(self.xcoord, self.ycoord, event.x, event.y, fill="black", width=self.brush_size)
+        self.xcoord, self.ycoord = event.x, event.y
+    def end_line(self,event):
+        self.xcoord, self.ycoord = event.x,event.y
     def check_state(self):
         if self.char_count_checked.get() == 1:
           self.character_count()
